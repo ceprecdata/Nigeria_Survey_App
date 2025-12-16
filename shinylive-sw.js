@@ -2223,6 +2223,9 @@ self.addEventListener("install", (event) => {
     './manifest.json',
     './app.json',
     './shinylive/shinylive.js'
+// 🚨 THE CRITICAL FIX: Pre-load the files R asks for synchronously
+    './shinylive/webr/vfs/usr/lib/R/library/translations/DESCRIPTION',
+    './shinylive/webr/vfs/usr/lib/R/library/translations/Meta/package.rds'
   ];
   event.waitUntil(
     caches.open(version + cacheName).then((cache) => {
