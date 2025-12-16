@@ -1,28 +1,39 @@
-<head>
+<!doctype html>
+<html lang="en">
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nigeria Survey App</title>
-    
+
     <script type="module">
-      // 1. DIRECT REGISTRATION (More reliable for offline)
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('./shinylive-sw.js', { scope: './' })
-            .then(reg => console.log('Offline system active at:', reg.scope))
-            .catch(err => console.log('Offline system failed:', err));
+            .then(reg => console.log('Service Worker Registered'))
+            .catch(err => console.log('Service Worker Failed', err));
         });
       }
-
-      // 2. RUN THE APP
-      import { runExportedApp } from "./shinylive/shinylive.js";
-      runExportedApp({
-        id: "root",
-        appEngine: "r",
-        relPath: "",
-      });
     </script>
 
     <link rel="stylesheet" href="./shinylive/style-resets.css" />
     <link rel="stylesheet" href="./shinylive/shinylive.css" />
-    <link rel="manifest" href="manifest.json">
-</head>
+    <link rel="manifest" href="./manifest.json">
+  </head>
+  
+  <body>
+    <div style="height: 100vh; width: 100vw" id="root"></div>
+
+    <script type="module">
+      import { runExportedApp } from "./shinylive/shinylive.js";
+
+      // This ensures the DOM is 100% ready before starting R
+      window.addEventListener('DOMContentLoaded', () => {
+        runExportedApp({
+          id: "root",
+          appEngine: "r",
+          relPath: "./", // Added the dot-slash here for subfolder support
+        });
+      });
+    </script>
+  </body>
+</html>
