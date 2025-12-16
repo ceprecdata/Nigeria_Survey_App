@@ -2217,8 +2217,17 @@ function addCoiHeaders(resp) {
   });
 }
 self.addEventListener("install", (event) => {
+  const CORE_ASSETS = [
+    './',
+    './index.html',
+    './manifest.json',
+    './app.json',
+    './shinylive/shinylive.js'
+  ];
   event.waitUntil(
-    Promise.all([self.skipWaiting(), caches.open(version + cacheName)])
+    caches.open(version + cacheName).then((cache) => {
+      return cache.addAll(CORE_ASSETS);
+    }).then(() => self.skipWaiting())
   );
 });
 self.addEventListener("activate", function(event) {
