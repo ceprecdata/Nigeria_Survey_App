@@ -28,11 +28,12 @@
 
       // This ensures the DOM is 100% ready before starting R
       window.addEventListener('DOMContentLoaded', () => {
-        runExportedApp({
-          id: "root",
-          appEngine: "r",
-          relPath: "./", // Added the dot-slash here for subfolder support
-        });
+runExportedApp({
+  id: "root",
+  appEngine: "r",
+  relPath: "./",             // Vital: Tells it to look in the current folder
+  serviceWorkerScope: "./",  // Vital: Keeps the "Librarian" focused on this folder
+});
       });
     </script>
   </body>

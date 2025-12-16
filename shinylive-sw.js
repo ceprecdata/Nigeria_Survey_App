@@ -2312,31 +2312,27 @@ self.addEventListener("fetch", function(event) {
   if (request.method !== "GET") {
     return;
   }
-  if (useCaching) {
+if (useCaching) {
     event.respondWith(
       (async () => {
-        const cachedResponse = await caches.match(request);
-        if (cachedResponse) {
-          return cachedResponse;
-        }
+        const cache = await caches.open(version + cacheName);
+        const cachedResponse = await cache.match(request);
+        
+        // VILLAGE MODE: Use vault first!
+        if (cachedResponse) return cachedResponse;
+
         try {
+          // If not in vault, download and save it
           const networkResponse = addCoiHeaders(await fetch(request));
           const baseUrl = self.location.origin + dirname(self.location.pathname);
-          if (
-  request.url.startsWith(baseUrl + "/shinylive/") || 
-  request.url === baseUrl + "/favicon.ico" ||
-  request.url === baseUrl + "/" ||           // Cache the root
-  request.url === baseUrl + "/index.html" || // Cache the index
-  request.url === baseUrl + "/manifest.json" // Cache the manifest
-) {
-  const cache = await caches.open(version + cacheName);
-  await cache.put(request, networkResponse.clone());
-}
+          
+          // AGGRESSIVE RULE: Save EVERY file from our survey folder
+          if (request.url.startsWith(baseUrl) && request.method === "GET") {
+             await cache.put(request, networkResponse.clone());
+          }
           return networkResponse;
-        } catch {
-          return new Response("Failed to find in cache, or fetch.", {
-            status: 404
-          });
+        } catch (e) {
+          return new Response("Offline: File not found in vault.", { status: 404 });
         }
       })()
     );
