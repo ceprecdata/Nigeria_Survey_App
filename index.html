@@ -4,20 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<script>
-  (async () => {
-    const filesToCache = [
-      './shinylive/webr/vfs/usr/lib/R/library/translations/DESCRIPTION',
-      './shinylive/webr/vfs/usr/lib/R/library/translations/Meta/package.rds',
-      './shinylive/webr/vfs/usr/lib/R/library/translations/R/translations.rdb',
-      './shinylive/webr/vfs/usr/lib/R/library/translations/R/translations.rdx'
-    ];
-    
-    console.log("Forcing HTTP Disk Cache for synchronous R files...");
-    await Promise.all(filesToCache.map(url => fetch(url, { cache: "force-cache" })));
-    console.log("Offline safety net deployed.");
-  })();
-</script>
     <title>Nigeria Survey App</title>
 
     <script type="module">
