@@ -2202,7 +2202,7 @@ function asgiToRes(res, body) {
 }
 
 // src/shinylive-sw.ts
-var useCaching = false;
+var useCaching = true;
 var cacheName = "::shinyliveServiceworker";
 var version = "v9";
 function addCoiHeaders(resp) {
@@ -2313,10 +2313,16 @@ self.addEventListener("fetch", function(event) {
         try {
           const networkResponse = addCoiHeaders(await fetch(request));
           const baseUrl = self.location.origin + dirname(self.location.pathname);
-          if (request.url.startsWith(baseUrl + "/shinylive/") || request.url === baseUrl + "/favicon.ico") {
-            const cache = await caches.open(version + cacheName);
-            await cache.put(request, networkResponse.clone());
-          }
+          if (
+  request.url.startsWith(baseUrl + "/shinylive/") || 
+  request.url === baseUrl + "/favicon.ico" ||
+  request.url === baseUrl + "/" ||           // Cache the root
+  request.url === baseUrl + "/index.html" || // Cache the index
+  request.url === baseUrl + "/manifest.json" // Cache the manifest
+) {
+  const cache = await caches.open(version + cacheName);
+  await cache.put(request, networkResponse.clone());
+}
           return networkResponse;
         } catch {
           return new Response("Failed to find in cache, or fetch.", {
